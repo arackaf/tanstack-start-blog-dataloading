@@ -53,12 +53,6 @@ const reactQueryMiddleware = createMiddleware()
     return serverFnResult;
   });
 
-/*
-
-
-
-*/
-
 export const saveEpic = createServerFn({ method: "POST" })
   .middleware([reactQueryMiddleware])
   .validator((updates: { id: string; newName: string }) => updates)
@@ -71,8 +65,8 @@ export const saveEpic = createServerFn({ method: "POST" })
     });
     console.log("Server function finished", { context });
 
-    //return {};
-    throw redirect({ to: "/app/epics", search: { page: 1 } });
+    return {};
+    //throw redirect({ to: "/app/epics", search: { page: 1 } });
   });
 
 export const Route = createFileRoute("/app/epics/$epicId/edit")({
