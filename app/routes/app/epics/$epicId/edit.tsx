@@ -44,12 +44,6 @@ const reactQueryMiddleware = createMiddleware()
       throw er;
     }
 
-    // types fine, but does not work - blows up at runtime - serverFnResult.clientAfterContext is undefined
-    // serverFnResult.clientAfterContext.query.abc = "def";
-
-    // works, but TS no likey
-    // serverFnResult.sendContext.query.abc = "def";
-
     return serverFnResult;
   });
 
@@ -82,40 +76,23 @@ export const Route = createFileRoute("/app/epics/$epicId/edit")({
 });
 
 function EditEpic() {
-  const { epicId } = Route.useParams();
   const { currentEpicOptions } = Route.useRouteContext();
   const { data: epic } = useSuspenseQuery(currentEpicOptions);
   const newName = useRef<HTMLInputElement>(null);
 
   const [saving, setSaving] = useState(false);
 
-  const queryClient = useQueryClient();
-
   const runSave = useServerFn(saveEpic);
 
   const save = async () => {
     setSaving(true);
 
-    const result: any = await runSave({
+    await runSave({
       data: {
         id: epic.id,
         newName: newName.current!.value,
       },
     });
-
-    console.log({ result });
-
-    const listOptions = epicsQueryOptions(0, 1);
-    const epicOptions = epicQueryOptions(0, "1");
-
-    //queryClient.invalidateQueries({ queryKey: ["epics"], refetchType: "none" });
-    //queryClient.invalidateQueries({ queryKey: ["epic"], refetchType: "none" });
-
-    //queryClient.setQueryData(["epics", "list", 1], result.query.listData, { updatedAt: Date.now() });
-    //queryClient.setQueryData(["epic", "1"], result.query.epicData, { updatedAt: Date.now() });
-
-    //queryClient.refetchQueries({ queryKey: ["epics"], type: "active", stale: true });
-    //queryClient.refetchQueries({ queryKey: ["epic"], type: "active", stale: true });
 
     setSaving(false);
   };
@@ -126,11 +103,6 @@ function EditEpic() {
 
   return (
     <div className="flex flex-col gap-5 p-3">
-      <div>
-        <Link to="/app/epics" search={{ page: 1 }}>
-          Back
-        </Link>
-      </div>
       <div>
         <div className="flex flex-col gap-2">
           <span>Edit epic {epic.id}</span>
