@@ -4,7 +4,7 @@ import { routerWithQueryClient } from "@tanstack/react-router-with-query";
 
 import { routeTree } from "./routeTree.gen";
 
-import { queryClient } from "./queryClient";
+export const queryClient = new QueryClient();
 
 export function createRouter() {
   const queryClientToUse = typeof window === "object" ? queryClient : new QueryClient();
