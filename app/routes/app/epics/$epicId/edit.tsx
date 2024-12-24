@@ -17,15 +17,7 @@ const reactQueryMiddleware = createMiddleware()
       const res = await next();
       console.log("in client", "result", { res });
 
-      //console.log({ x: res.context.query.listData });
-
-      const ff = queryClient.getQueriesData({ queryKey: ["epics"] });
-      console.log({ ff });
-
       queryClient.setQueryData(["epics", "list", 1], res.context.query.listData, { updatedAt: +new Date() });
-
-      const gg = queryClient.getQueriesData({ queryKey: ["epics"] });
-      console.log({ gg });
 
       return res;
     } catch (er) {
